@@ -37,7 +37,10 @@ public enum TCAExampleModule: Modulable, CaseIterable {
                 "CFBundleShortVersionString": "1.0",
                 "CFBundleVersion": "1",
 //                "UIMainStoryboardFile": "",
-                "UILaunchStoryboardName": "LaunchScreen"
+                "UILaunchStoryboardName": "LaunchScreen",
+                "NSAppTransportSecurity": .dictionary([
+                    "NSAllowsArbitraryLoads" : true
+                ]),
             ])
         default:
             return .default
