@@ -18,30 +18,39 @@ struct CounterView: View {
             
             VStack {
                 Text("\(viewStore.count)")
-                    .font(.largeTitle)
-                    .padding()
-                    .background(Color.black.opacity(0.1))
-                    .cornerRadius(10)
+                    .customBackground()
                 
                 HStack {
                     Button("-") {
                         viewStore.send(.decrementButtonTapped)
                     }
-                    .font(.largeTitle)
-                    .padding()
-                    .background(Color.black.opacity(0.1))
-                    .cornerRadius(10)
+                    .customBackground()
                     
                     Button("+") {
                         viewStore.send(.incrementButtonTapped)
                     }
-                    .font(.largeTitle)
-                    .padding()
-                    .background(Color.black.opacity(0.1))
-                    .cornerRadius(10)
+                    .customBackground()
                 }
             }
         }
+    }
+}
+
+struct CustomBackground: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .padding()
+            .background(Color.black.opacity(0.1))
+            .cornerRadius(10)
+    }
+}
+
+private extension View {
+    
+    func customBackground() -> some View {
+        modifier(CustomBackground())
     }
 }
 
