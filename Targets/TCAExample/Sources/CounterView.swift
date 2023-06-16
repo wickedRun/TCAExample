@@ -32,6 +32,11 @@ struct CounterView: View {
                     .customBackground()
                 }
                 
+                Button(viewStore.isTimerRunning ? "Stop timer" : "Start Timer") {
+                    viewStore.send(.toggleTimerButtonTapped)
+                }
+                .customBackground()
+                
                 Button("Fact") {
                     viewStore.send(.factButtonTapped)
                 }
