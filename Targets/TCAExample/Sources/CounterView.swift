@@ -31,6 +31,20 @@ struct CounterView: View {
                     }
                     .customBackground()
                 }
+                
+                Button("Fact") {
+                    viewStore.send(.factButtonTapped)
+                }
+                .customBackground()
+                
+                if viewStore.isLoading {
+                    ProgressView()
+                } else if let fact = viewStore.fact {
+                    Text(fact)
+                        .font(.largeTitle)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
             }
         }
     }
