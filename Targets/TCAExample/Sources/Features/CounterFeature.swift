@@ -20,6 +20,7 @@ struct CounterFeature: ReducerProtocol {
     enum Action {
         case decrementButtonTapped
         case factButtonTapped
+        case factResponse(String)
         case incrementButtonTapped
     }
     
@@ -34,12 +35,21 @@ struct CounterFeature: ReducerProtocol {
             state.fact = nil
             state.isLoading = true
 
-            // 이 방법으로는 concurrency를 지원하지 않는 function은 async 호출 불가능하고 에러 처리 불가능하므로 적절한 방법이 아니다.
-            let (data, _) = try await URLSession.shared.data(from: URL(string: "http://numbersapi.com/\(state.count)")!)
-
-            state.fact = String(decoding: data, as: UTF8.self)
-            state.isLoading = false
+            return .run { [count = state.count] send in
+                // count 값을 캡쳐링 하는 이유:
+                // Mutable capture of 'inout' parameter 'state' is not allowed in concurrently-executing code
+                // concurrently-executing 코드에서는 inout 매개변수의 mutable 캡쳐는 불가능하다.
+                // 그래서 값이 일정하도록 캡쳐링한다.
+                let (data, _) = try await URLSession.shared.data(from: URL(string: "http://numbersapi.com/\(count)")!)
+                
+                let fact = String(decoding: data, as: UTF8.self)
+                await send(.factResponse(fact))
+                // 이렇게 따로 send를 호출하는 이유도 마찬가지로 state를 쓸 수 없기 때문에 다시 reduce를 통해서 하도록 한다.
+            }
             
+        case let .factResponse(fact):
+            state.fact = fact
+            state.isLoading = false
             return .none
             
         case .incrementButtonTapped:
