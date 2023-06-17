@@ -1,3 +1,11 @@
+//
+//  CounterFeatureTests.swift
+//  TCAExampleTests
+//
+//  Created by wickedRun on 2023/06/17.
+//  Copyright © 2023 org.wickedrun. All rights reserved.
+//
+
 import Foundation
 import XCTest
 
@@ -5,7 +13,7 @@ import XCTest
 import ComposableArchitecture
 
 @MainActor
-final class TCAExampleTests: XCTestCase {
+final class CounterFeatureTests: XCTestCase {
     func testCounter() async {
         let store = TestStore(initialState: CounterFeature.State()) {
             CounterFeature()
