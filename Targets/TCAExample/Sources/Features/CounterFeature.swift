@@ -88,3 +88,5 @@ struct CounterFeature: ReducerProtocol {
 
 // Equatable을 이 파일 밖에서 extension으로 채택해주려면 직접 구현해주어야 한다.
 extension CounterFeature.State: Equatable { }
+
+extension CounterFeature.Action: Equatable { }

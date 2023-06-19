@@ -14,6 +14,28 @@ import ComposableArchitecture
 
 @MainActor
 final class CounterFeatureTests: XCTestCase {
+    
+    func testTimer() async {
+        let store = TestStore(initialState: CounterFeature.State()) {
+            CounterFeature()
+        }
+        
+        await store.send(.toggleTimerButtonTapped) {
+            $0.isTimerRunning = true
+        }
+        // 위에 Action만 보내면 action이 끝나지 않는다.
+        // ❌ An effect returned for this action is still running.
+        //    It must complete before the end of the test. …
+        
+        await store.receive(.timerTick, timeout: .seconds(2)) {
+            $0.count = 1
+        }
+        
+        await store.send(.toggleTimerButtonTapped) {
+            $0.isTimerRunning = false
+        }
+    }
+    
     func testCounter() async {
         let store = TestStore(initialState: CounterFeature.State()) {
             CounterFeature()
