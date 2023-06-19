@@ -16,8 +16,12 @@ import ComposableArchitecture
 final class CounterFeatureTests: XCTestCase {
     
     func testTimer() async {
+        let clock = TestClock()
+        
         let store = TestStore(initialState: CounterFeature.State()) {
             CounterFeature()
+        } withDependencies: {
+            $0.continuousClock = clock
         }
         
         await store.send(.toggleTimerButtonTapped) {
@@ -27,6 +31,7 @@ final class CounterFeatureTests: XCTestCase {
         // ❌ An effect returned for this action is still running.
         //    It must complete before the end of the test. …
         
+        await clock.advance(by: .seconds(1))
         await store.receive(.timerTick, timeout: .seconds(2)) {
             $0.count = 1
         }
