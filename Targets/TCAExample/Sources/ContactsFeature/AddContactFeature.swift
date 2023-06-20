@@ -20,21 +20,26 @@ struct AddContactFeature: ReducerProtocol {
         case setName(String)
         
         enum Delegate: Equatable {
-            case cancel
+//            case cancel
             case saveContact(Contact)
         }
     }
     
+    @Dependency(\.dismiss) var dismiss
+    
     func reduce(into state: inout State, action: Action) -> EffectTask<Action> {
         switch action {
         case .cancelButtonTapped:
-            return .send(.delegate(.cancel))
+            return .run { _ in await self.dismiss() }
             
         case .delegate:
             return .none
             
         case .saveButtonTapped:
-            return .send(.delegate(.saveContact(state.contact)))
+            return .run { [contact = state.contact] send in
+                await send(.delegate(.saveContact(contact)))
+                await self.dismiss()
+            }
             
         case let .setName(name):
             state.contact.name = name
