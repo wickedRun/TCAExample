@@ -12,9 +12,14 @@ struct TCAExampleApp: App {
             ._printChanges()
     }
     
+    static let contactsStore = Store(initialState: ContactsFeature.State()) {
+        ContactsFeature()
+            ._printChanges()
+    }
+    
     var body: some Scene {
         WindowGroup {
-            CounterView(store: TCAExampleApp.store)
+            ContactsView(store: TCAExampleApp.contactsStore)
         }
     }
 }
