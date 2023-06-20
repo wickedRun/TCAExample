@@ -20,7 +20,6 @@ struct AddContactFeature: ReducerProtocol {
         case setName(String)
         
         enum Delegate: Equatable {
-//            case cancel
             case saveContact(Contact)
         }
     }
