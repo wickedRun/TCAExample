@@ -17,6 +17,7 @@ struct AddContactView: View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             Form {
                 TextField("Name", text: viewStore.binding(get: \.contact.name, send: { .setName($0) }))
+                    .textFieldStyle(.plain) // Action이 두번 찍히는 것에 대한 해결책?
                 Button("Save") {
                     viewStore.send(.saveButtonTapped)
                 }
