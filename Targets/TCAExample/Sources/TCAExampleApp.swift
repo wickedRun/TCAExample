@@ -12,7 +12,11 @@ struct TCAExampleApp: App {
             ._printChanges()
     }
     
-    static let contactsStore = Store(initialState: ContactsFeature.State()) {
+    static let contactsStore = Store(initialState: ContactsFeature.State(contacts: [
+        Contact(id: UUID(), name: "Blob"),
+        Contact(id: UUID(), name: "Blob Jr"),
+        Contact(id: UUID(), name: "Blob Sr")
+    ])) {
         ContactsFeature()
             ._printChanges()
     }
