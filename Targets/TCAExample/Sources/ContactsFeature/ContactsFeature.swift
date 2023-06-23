@@ -18,12 +18,14 @@ struct ContactsFeature: ReducerProtocol {
     struct State: Equatable {
         var contacts: IdentifiedArrayOf<Contact> = []
         @PresentationState var destination: Destination.State?
+        var path = StackState<ContactDetailFeature.State>()
     }
     
     enum Action: Equatable {
         case addButtonTapped
         case destination(PresentationAction<Destination.Action>)
         case deleteButtonTapped(id: Contact.ID)
+        case path(StackAction<ContactDetailFeature.State, ContactDetailFeature.Action>)
         
         enum Alert: Equatable {
             case confirmDeletion(id: Contact.ID)
@@ -57,11 +59,22 @@ struct ContactsFeature: ReducerProtocol {
             case let .deleteButtonTapped(id: id):
                 state.destination = .alert(.deleteConfirmation(id: id))
                 return .none
-            
+                
+            case let .path(.element(id: id, action: .delegate(.confirmDeletion))):
+                guard let detailState = state.path[id: id]
+                else { return .none }
+                state.contacts.remove(id: detailState.contact.id)
+                return .none
+                
+            case .path:
+                return .none
             }
         }
         .ifLet(\.$destination, action: /Action.destination) {
             Destination()
+        }
+        .forEach(\.path, action: /Action.path) {
+            ContactDetailFeature()
         }
     }
 }
